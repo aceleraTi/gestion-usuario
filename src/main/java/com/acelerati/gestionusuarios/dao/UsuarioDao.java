@@ -8,7 +8,7 @@ package com.acelerati.gestionusuarios.dao;
 import com.acelerati.gestionusuarios.entity.Usuario;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
 
 /**
  *
