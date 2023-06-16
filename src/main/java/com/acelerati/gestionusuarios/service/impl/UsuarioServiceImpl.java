@@ -45,20 +45,20 @@ public class UsuarioServiceImpl implements UsuarioService {
      *
      * @author Victor Bocanegra
      * @param usuarioDto UsuarioDto
+     * @param usuarioCreacion Long
      */
     @Override
     @Transactional
-    public void createUsuario(UsuarioDto usuarioDto) {
+    public UsuarioDto createUsuario(UsuarioDto usuarioDto, Long usuarioCreacion) {
         Usuario entity;
-        validacionesUsuario(usuarioDto);
+        validacionesUsuario(usuarioDto, usuarioCreacion);
         entity = new Usuario(usuarioDto.getNombre(), usuarioDto.getApellido(), usuarioDto.getEmail(), usuarioDto.getCodigo(), tipoUsuario);
         usuarioDao.save(entity);
-        if (entity == null) {
-            throw new IllegalArgumentException("Ocurrio un error al momento de crear el usuario");
-        }
+        return new UsuarioDto("Usuario creado satisfatoriamente");
+
     }
 
-    public void validacionesUsuario(UsuarioDto usuarioDto) {
+    public void validacionesUsuario(UsuarioDto usuarioDto, Long usuarioCreacion) {
 
         if (usuarioDto.getNombre() == null || usuarioDto.getNombre().isEmpty()) {
             throw new IllegalArgumentException("El Nombre del usuario es obligatorio");
@@ -122,6 +122,37 @@ public class UsuarioServiceImpl implements UsuarioService {
         existe = usuarioDao.findByEmail(usuarioDto.getEmail());
         if (existe.isPresent()) {
             throw new IllegalArgumentException("Ya existe un usuario con email: " + usuarioDto.getEmail() + "");
+        }
+
+        existe = usuarioDao.findById(usuarioCreacion);
+        if (existe.isPresent()) {
+            //Valido si puede crear al usuario 
+            if (existe.get().getTipoUsuario().getTipoUsuarioId() == 1) {
+                //Puede crear solo directores
+                if (tipoUsuario.getTipoUsuarioId() != 2) {
+                    throw new IllegalArgumentException("El rol Decano solo puede crear Directores de Programas");
+                }
+            } else if (existe.get().getTipoUsuario().getTipoUsuarioId() == 2) {
+                //Puede crear solo profesores
+                if (tipoUsuario.getTipoUsuarioId() != 3) {
+                    throw new IllegalArgumentException("El rol Director solo puede crear Profesores");
+                }
+            } else if (existe.get().getTipoUsuario().getTipoUsuarioId() == 3) {
+                //No puede crear
+                throw new IllegalArgumentException("El rol Profesor no puede crear usuarios");
+            } else if (existe.get().getTipoUsuario().getTipoUsuarioId() == 4) {
+                //Puede crear solo alumnos
+                if (tipoUsuario.getTipoUsuarioId() != 4) {
+                    throw new IllegalArgumentException("El rol Alumno solo puede crear Alumnos");
+                }
+            }
+        } else if (usuarioCreacion != 0) {
+            throw new IllegalArgumentException("No existe un usuario de creacion con id = " + usuarioCreacion + "");
+        } else {
+            //Puede ser creacion de Alumno
+            if (tipoUsuario.getTipoUsuarioId() != 4) {
+                throw new IllegalArgumentException("Solo pude crear usuarios de Rol Alumno");
+            }
         }
     }
 

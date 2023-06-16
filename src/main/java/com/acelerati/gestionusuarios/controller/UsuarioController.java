@@ -9,10 +9,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import io.swagger.annotations.ApiParam;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -63,13 +66,15 @@ public class UsuarioController {
      * Metodo que permite la creacion de un usuario.
      *
      * @author Victor Bocanegra
+     * @param usuarioId int
      * @param request UsuarioDto
      * @return UsuarioDto
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<?> create(@RequestBody UsuarioDto request) {
+    public ResponseEntity<?> create(@RequestParam(value = "usuarioId", required=false,defaultValue = "0") int usuarioId, 
+            @RequestBody UsuarioDto request) {
         try {
-            usuarioService.createUsuario(request);
+            usuarioService.createUsuario(request,Long.valueOf(usuarioId));
             return ResponseEntity.ok(request);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);

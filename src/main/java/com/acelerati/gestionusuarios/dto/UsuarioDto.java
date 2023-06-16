@@ -27,9 +27,10 @@ public class UsuarioDto implements Serializable {
     private String email;
     private String codigo;
     private Long tipoUsuario;
+    private String mensaje;
 
     public UsuarioDto() {
-    
+
     }
 
     public UsuarioDto(Long usuarioId, String nombre, String apellido, String email, String codigo, Long tipoUsuario) {
@@ -41,6 +42,10 @@ public class UsuarioDto implements Serializable {
         this.tipoUsuario = tipoUsuario;
     }
 
+    public UsuarioDto(String mensaje) {
+        this.mensaje = mensaje;
+    }
+    
     public Long getUsuarioId() {
         return usuarioId;
     }
@@ -87,6 +92,14 @@ public class UsuarioDto implements Serializable {
 
     public void setTipoUsuario(Long tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
     }
 
 }

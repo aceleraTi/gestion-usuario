@@ -19,8 +19,10 @@ public interface UsuarioService {
      *
      * @author Victor Bocanegra
      * @param usuarioDto UsuarioDto
+     * @param usuarioCreacion Long
+     * @return  UsuarioDto
      */
-    void createUsuario(UsuarioDto usuarioDto);
+    UsuarioDto createUsuario(UsuarioDto usuarioDto, Long usuarioCreacion);
 
     /**
      * Metodo que retorna un usuario por id en BD.
