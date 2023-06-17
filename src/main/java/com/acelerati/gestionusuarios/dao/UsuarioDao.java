@@ -5,7 +5,9 @@
  */
 package com.acelerati.gestionusuarios.dao;
 
+import com.acelerati.gestionusuarios.entity.TipoUsuario;
 import com.acelerati.gestionusuarios.entity.Usuario;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -43,5 +45,14 @@ public interface UsuarioDao extends JpaRepository<Usuario, Long> {
      * @author vbocanegra
      */
     Optional<Usuario> findByEmailAndCodigo(String email, String codigo);
+    
+    /**
+     * Metodo que retorna una lista de Usuario a partir de su tipo.
+     *
+     * @param tipoUsuario TipoUsuario
+     * @return Lista Usuario
+     * @author vbocanegra
+     */
+    List<Usuario> findByTipoUsuario(TipoUsuario tipoUsuario);
 
 }

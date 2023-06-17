@@ -227,4 +227,30 @@ public class UsuarioServiceImpl implements UsuarioService {
         });
         return result;
     }
+  
+    /**
+     * Metodo que retorna listado de todos los usuarios por tipo en BD.
+     *
+     * @author Victor Bocanegra
+     * @param tipoUsuarioId Long
+     * @return List UsuarioDto
+     */
+    @Override
+    public List<UsuarioDto> getUsuariosByTipo(Long tipoUsuarioId) {
+
+        TipoUsuario tipoUsua = new TipoUsuario();
+        tipoUsua.setTipoUsuarioId(tipoUsuarioId);
+
+        List<Usuario> list = usuarioDao.findByTipoUsuario(tipoUsua);
+        List<UsuarioDto> result = new ArrayList<>();
+        list.stream().map((usuario) -> {
+            UsuarioDto dto = new UsuarioDto(usuario.getUsuarioId(), usuario.getNombre(),
+                    usuario.getApellido(), usuario.getEmail(), usuario.getCodigo(),
+                    usuario.getTipoUsuario().getTipoUsuarioId());
+            return dto;
+        }).forEachOrdered((dto) -> {
+            result.add(dto);
+        });
+        return result;
+    }
 }

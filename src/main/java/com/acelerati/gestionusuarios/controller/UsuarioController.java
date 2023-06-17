@@ -9,8 +9,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import io.swagger.annotations.ApiParam;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +51,8 @@ public class UsuarioController {
      * @return UsuarioDto
      */
     @RequestMapping(value = "/{usuarioId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<UsuarioDto> getEmpleado(@ApiParam(value = "usuarioId", required = true) @PathVariable int usuarioId) {
+    public ResponseEntity<UsuarioDto> getEmpleado(@ApiParam(value = "usuarioId", required = true) 
+    @PathVariable int usuarioId) {
         try {
             UsuarioDto us = usuarioService.getUsuario(Long.valueOf(usuarioId));
             return new ResponseEntity(us, HttpStatus.OK);
@@ -97,6 +96,23 @@ public class UsuarioController {
         try {
             UsuarioDto us = usuarioService.login(email, codigo);
             return new ResponseEntity(us, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    /**
+     * Metodo que permite obtener todos los usuarios por tipo de usuario.
+     *
+     * @author Victor Bocanegra
+     * @param tipUserId
+     * @return List UsuarioDto
+     */
+    @RequestMapping(value = "/listByTipoUser/{tipUserId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<UsuarioDto>> findAllByTipo(@ApiParam(value = "tipUserId") @PathVariable int tipUserId) {
+        try {
+            List<UsuarioDto> list = usuarioService.getUsuariosByTipo(Long.valueOf(tipUserId));
+            return ResponseEntity.ok(list);
         } catch (Exception ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
