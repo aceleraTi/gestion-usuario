@@ -172,36 +172,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                     usuario.get().getApellido(), usuario.get().getEmail(), usuario.get().getCodigo(),
                     usuario.get().getTipoUsuario().getTipoUsuarioId());
         } else {
-            throw new IllegalArgumentException("No existe el usuario en BD");
-        }
-        return result;
-    }
-
-    /**
-     * Metodo que consulta un usuario por email y login.
-     *
-     * @author Victor Bocanegra
-     * @param email String
-     * @param codigo String
-     * @return UsuarioDto
-     */
-    @Override
-    public UsuarioDto login(String email, String codigo) {
-
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("Por favor ingrese el email.");
-        }
-        if (codigo == null || codigo.isEmpty()) {
-            throw new IllegalArgumentException("Por favor ingrese el codigo.");
-        }
-        Optional<Usuario> usuario = usuarioDao.findByEmailAndCodigo(email, codigo);
-        UsuarioDto result = null;
-        if (usuario.isPresent()) {
-            result = new UsuarioDto(usuario.get().getUsuarioId(), usuario.get().getNombre(),
-                    usuario.get().getApellido(), usuario.get().getEmail(), usuario.get().getCodigo(),
-                    usuario.get().getTipoUsuario().getTipoUsuarioId());
-        } else {
-            throw new IllegalArgumentException("No existe el usuario en BD. Por favor registrese o solicite su creación");
+            throw new IllegalArgumentException("No existe el usuario con: "+id+" en BD");
         }
         return result;
     }
@@ -217,40 +188,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         List<Usuario> list = usuarioDao.findAll();
         List<UsuarioDto> result = new ArrayList<>();
-        list.stream().map((usuario) -> {
-            UsuarioDto dto = new UsuarioDto(usuario.getUsuarioId(), usuario.getNombre(),
-                    usuario.getApellido(), usuario.getEmail(), usuario.getCodigo(),
-                    usuario.getTipoUsuario().getTipoUsuarioId());
-            return dto;
-        }).forEachOrdered((dto) -> {
-            result.add(dto);
-        });
+        if (!list.isEmpty()) {
+            list.stream().map((usuario) -> {
+                UsuarioDto dto = new UsuarioDto(usuario.getUsuarioId(), usuario.getNombre(),
+                        usuario.getApellido(), usuario.getEmail(), usuario.getCodigo(),
+                        usuario.getTipoUsuario().getTipoUsuarioId());
+                return dto;
+            }).forEachOrdered((dto) -> {
+                result.add(dto);
+            });
+        } else {
+            throw new IllegalArgumentException("No hay usuarios en la BD");
+        }
+
         return result;
     }
-  
-    /**
-     * Metodo que retorna listado de todos los usuarios por tipo en BD.
-     *
-     * @author Victor Bocanegra
-     * @param tipoUsuarioId Long
-     * @return List UsuarioDto
-     */
-    @Override
-    public List<UsuarioDto> getUsuariosByTipo(Long tipoUsuarioId) {
 
-        TipoUsuario tipoUsua = new TipoUsuario();
-        tipoUsua.setTipoUsuarioId(tipoUsuarioId);
-
-        List<Usuario> list = usuarioDao.findByTipoUsuario(tipoUsua);
-        List<UsuarioDto> result = new ArrayList<>();
-        list.stream().map((usuario) -> {
-            UsuarioDto dto = new UsuarioDto(usuario.getUsuarioId(), usuario.getNombre(),
-                    usuario.getApellido(), usuario.getEmail(), usuario.getCodigo(),
-                    usuario.getTipoUsuario().getTipoUsuarioId());
-            return dto;
-        }).forEachOrdered((dto) -> {
-            result.add(dto);
-        });
-        return result;
-    }
 }

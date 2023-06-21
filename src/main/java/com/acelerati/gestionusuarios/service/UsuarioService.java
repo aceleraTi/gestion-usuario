@@ -6,8 +6,6 @@
 package com.acelerati.gestionusuarios.service;
 
 import com.acelerati.gestionusuarios.dto.UsuarioDto;
-import com.acelerati.gestionusuarios.entity.TipoUsuario;
-import com.acelerati.gestionusuarios.entity.Usuario;
 import java.util.List;
 
 /**
@@ -42,24 +40,5 @@ public interface UsuarioService {
      * @return List UsuarioDto
      */
     List<UsuarioDto> getUsuarios();
-
-    /**
-     * Metodo que consulta un usuario por email y login.
-     *
-     * @author Victor Bocanegra
-     * @param email String
-     * @param codigo String
-     * @return UsuarioDto
-     */
-    UsuarioDto login(String email, String codigo);
-    
-    /**
-     * Metodo que retorna una lista de Usuario a partir de su tipo.
-     *
-     * @param tipoUsuario TipoUsuario
-     * @return Lista Usuario
-     * @author vbocanegra
-     */
-    List<UsuarioDto> getUsuariosByTipo(Long tipoUsuario);
 
 }

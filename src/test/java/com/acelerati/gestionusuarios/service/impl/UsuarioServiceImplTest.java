@@ -14,6 +14,8 @@ import com.acelerati.gestionusuarios.dao.UsuarioDao;
 import com.acelerati.gestionusuarios.dto.UsuarioDto;
 import com.acelerati.gestionusuarios.entity.TipoUsuario;
 import com.acelerati.gestionusuarios.entity.Usuario;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,6 +28,9 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class UsuarioServiceImplTest {
@@ -536,6 +541,74 @@ public class UsuarioServiceImplTest {
             userService.createUsuario(dto, usuarioCreacion);
         });
         assertEquals("Solo pude crear usuarios de Rol Alumno", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Operacion de obtener un usuario por id")
+    public void getUsuario() {
+
+        TipoUsuario tipoUsuToCrear = new TipoUsuario();
+        tipoUsuToCrear.setTipoUsuarioId(2L);
+
+        Usuario user = new Usuario();
+        user.setNombre("Victor");
+        user.setApellido("Bocanegra");
+        user.setEmail("xxxx@gggg.com");
+        user.setCodigo("6763785634");
+        user.setTipoUsuario(tipoUsuToCrear);
+
+        Long usuarioId = 1L;
+
+        when(userDao.findById(usuarioId)).thenReturn(Optional.of(user));
+
+        UsuarioDto dto = userService.getUsuario(usuarioId);
+        assertEquals(user.getUsuarioId(), dto.getUsuarioId());
+
+    }
+
+    @Test
+    @DisplayName("Operacion de obtener un usuario: Caso no existe")
+    public void getUsuarioNoExiste() {
+
+        Long usuarioId = 1L;
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            userService.getUsuario(usuarioId);
+        });
+        assertEquals("No existe el usuario con: " + usuarioId + " en BD", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Operacion de obtener todos los usuarios de la BD")
+    public void getUsuarios() {
+
+        TipoUsuario tipoUsuToCrear = new TipoUsuario();
+        tipoUsuToCrear.setTipoUsuarioId(2L);
+
+        Usuario user = new Usuario();
+        user.setNombre("Victor");
+        user.setApellido("Bocanegra");
+        user.setEmail("xxxx@gggg.com");
+        user.setCodigo("6763785634");
+        user.setTipoUsuario(tipoUsuToCrear);
+
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(user);
+
+        when(userDao.findAll()).thenReturn(usuarios);
+
+        List<UsuarioDto> list = userService.getUsuarios();
+        assertEquals(list.size(), usuarios.size());
+
+    }
+
+    @Test
+    @DisplayName("Operacion de obtener todos los usuarios: Caso no hay usuarios")
+    public void getUsuariosNoLista() {
+
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            userService.getUsuarios();
+        });
+        assertEquals("No hay usuarios en la BD", exception.getMessage());
     }
 
 }
